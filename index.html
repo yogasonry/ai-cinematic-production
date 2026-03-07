@@ -78,7 +78,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 
 /* ══ CAROUSEL ══ */
 .carousel-sec { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.carousel { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; cursor: grab; }
+.carousel { display: flex; gap: 20px; overflow-x: auto; overflow-y: visible; padding: 8px 0 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; cursor: grab; justify-content: center; }
 .carousel:active { cursor: grabbing; }
 .carousel::-webkit-scrollbar { height: 4px; }
 .carousel::-webkit-scrollbar-track { background: var(--border); border-radius: 2px; }
