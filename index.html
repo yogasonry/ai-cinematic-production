@@ -69,6 +69,27 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 .scroll-hint { position: absolute; bottom: 32px; left: calc(50% - 20px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0; animation: up .8s 1.2s ease forwards; width: 40px; }
 .scroll-hint span { font-size: 9px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.28); }
 .scroll-line { width: 1px; height: 36px; background: linear-gradient(to bottom,rgba(255,255,255,.3),transparent); animation: pulse 2s ease infinite; }
+/* ══ WA FLOATING BUTTON ══ */
+#wa-float {
+  position: fixed; bottom: 28px; right: 24px; z-index: 999;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #25D366; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,.35);
+  text-decoration: none; opacity: 0; transform: translateY(12px);
+  transition: opacity .3s, transform .3s, box-shadow .2s;
+  pointer-events: none;
+}
+#wa-float.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+#wa-float:hover { box-shadow: 0 6px 28px rgba(37,211,102,.5); transform: translateY(-2px); }
+#wa-float svg { width: 22px; height: 22px; }
+
+/* ══ SCROLL REVEAL ══ */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .65s ease, transform .65s ease; }
+.reveal.revealed { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+
 @keyframes pulse { 0%,100%{opacity:.3} 50%{opacity:1} }
 
 /* ══ SECTION SHELL ══ */
@@ -223,7 +244,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 .mc-card.prem .mc-list li::before { color: var(--gold); }
 
 /* shared footer */
-.tbl-footer { margin-top: 20px; padding: 16px; border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: space-between; background: var(--surface2); }
+.tbl-footer { margin-top: 20px; padding: 16px; border: 1px solid var(--border); border-radius: 6px; display: flex; flex-direction: column; align-items: center; gap: 12px; background: var(--surface2); text-align: center; }
 .tbl-note { font-size: 11px; color: var(--mid); }
 .tbl-wa a { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #0D0D0D; background: var(--lime); padding: 9px 18px; border-radius: 5px; text-decoration: none; transition: opacity .2s; }
 .tbl-wa a:hover { opacity: .85; }
@@ -254,6 +275,9 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 <body>
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
+<a id="wa-float" href="https://wa.me/6281236869035?text=Hello%2C%20I%27d%20like%20to%20ask%20about%20AI%20Video%20Production" target="_blank" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
 <div id="lang-toggle">
   <button class="lang-btn active" onclick="setLang('en')">EN</button>
   <button class="lang-btn" onclick="setLang('id')">ID</button>
@@ -285,9 +309,9 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 <!-- CAROUSEL -->
 <section class="carousel-sec">
   <div class="wrap">
-    <div class="sec-eye" data-i18n="portfolio-eye">Portfolio</div>
-    <div class="sec-h2" data-i18n="portfolio-h2">Our Work</div>
-    <div class="carousel" id="carousel">
+    <div class="sec-eye reveal" data-i18n="portfolio-eye">Portfolio</div>
+    <div class="sec-h2 reveal reveal-delay-1" data-i18n="portfolio-h2">Our Work</div>
+    <div class="carousel reveal reveal-delay-2" id="carousel">
 
       <div class="card">
         <a class="card-thumb" href="https://www.instagram.com/reel/DVYGexbjV0i/" target="_blank" style="background-image:url('thumb-basic.jpg');background-size:cover;background-position:center;">
@@ -353,8 +377,8 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 <!-- PRICING -->
 <section id="pricing">
   <div class="wrap">
-    <div class="sec-eye" data-i18n="pricing-eye">Pricing</div>
-    <div class="sec-h2" data-i18n="pricing-h2">Choose Your Package</div>
+    <div class="sec-eye reveal" data-i18n="pricing-eye">Pricing</div>
+    <div class="sec-h2 reveal reveal-delay-1" data-i18n="pricing-h2">Choose Your Package</div>
 
     <!-- ═══ DESKTOP TABLE ═══ -->
     <div class="dt">
@@ -366,7 +390,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
       </div>
 
       <!-- Basic -->
-      <div class="dt-row">
+      <div class="dt-row reveal">
         <div class="pkt">
           <div class="pkt-num"><div class="pkt-dot"></div><span class="pkt-n">01</span></div>
           <div class="pkt-name">Basic</div>
@@ -388,7 +412,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
       </div>
 
       <!-- Standard -->
-      <div class="dt-row">
+      <div class="dt-row reveal reveal-delay-1">
         <div class="pkt">
           <div class="pkt-num"><div class="pkt-dot"></div><span class="pkt-n">02</span></div>
           <div class="pkt-name">Standard</div>
@@ -407,7 +431,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
       </div>
 
       <!-- Premium -->
-      <div class="dt-row prem">
+      <div class="dt-row prem reveal reveal-delay-2">
         <div class="pkt">
           <div class="pkt-num"><div class="pkt-dot"></div><span class="pkt-n">03</span></div>
           <div class="pkt-name">Premium</div>
@@ -647,8 +671,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
       'pkg-prem':     'Paket Premium',
       'prem-desc':    'Motion Graphic + Logo + Infographic. Paket lengkap untuk storytelling brand.',
       'shots-15':     '±15 AI Shots',
-      'discuss-btn':  '💬 \u00a0Discuss With Us',
-      'pricing-eye':  'Harga',
+      'discuss-btn':  '💬 \u00a0Mari Diskusi',
       'pricing-h2':   'Pilih Paket Anda',
       'col-pkg':      'Paket',
       'col-dur':      'Durasi',
@@ -737,6 +760,28 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 
   // init — default EN, restore from localStorage if set
   setLang(localStorage.getItem('lang') || 'en');
+
+  // ── WA FLOATING BUTTON ──
+  const waFloat = document.getElementById('wa-float');
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    // show after 200px scroll
+    waFloat.classList.toggle('visible', y > 200);
+    lastScroll = y;
+  });
+
+  // ── SCROLL REVEAL ──
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('revealed');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
