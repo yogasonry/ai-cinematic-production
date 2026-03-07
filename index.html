@@ -112,11 +112,15 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 
 /* ══ CAROUSEL ══ */
 .carousel-sec { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.carousel { display: flex; gap: 20px; overflow-x: auto; overflow-y: visible; padding: 8px 0 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; cursor: grab; justify-content: center; }
+.carousel { display: flex; gap: 20px; overflow-x: auto; overflow-y: visible; padding: 8px 0 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; cursor: grab; justify-content: center; scroll-behavior: auto; }
 .carousel:active { cursor: grabbing; }
 .carousel::-webkit-scrollbar { height: 4px; }
 .carousel::-webkit-scrollbar-track { background: var(--border); border-radius: 2px; }
 .carousel::-webkit-scrollbar-thumb { background: var(--lime); border-radius: 2px; }
+@media (max-width: 700px) { 
+  .carousel { scroll-snap-type: none; justify-content: flex-start; padding-left: 20px; padding-right: 20px; }
+  .carousel::after { content: ''; flex: 0 0 20px; }
+}
 .card { flex: 0 0 272px; scroll-snap-align: start; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative; transition: border-color .25s, transform .25s; }
 .card:hover { border-color: rgba(200,241,53,.35); transform: translateY(-4px); }
 .card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--lime); opacity: 0; transition: opacity .25s; z-index: 1; }
@@ -863,43 +867,44 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 
   // ── MOBILE CAROUSEL AUTO-SCROLL ──
   const car = document.getElementById('carousel');
-  let autoScroll = null;
-  let direction = 1;
-  let isDragging = false;
-  let pauseTimer = null;
+  let carDirection = 1;
+  let carDragging = false;
+  let carPauseTimer = null;
+  let carRunning = false;
 
-  function isMobile() { return window.innerWidth <= 700; }
-
-  function startAutoScroll() {
-    if (!isMobile()) return;
-    autoScroll = setInterval(() => {
-      if (isDragging) return;
+  function carTick() {
+    if (!carDragging) {
       const maxScroll = car.scrollWidth - car.clientWidth;
-      car.scrollLeft += direction * 0.8;
-      if (car.scrollLeft >= maxScroll - 2) direction = -1;
-      if (car.scrollLeft <= 2) direction = 1;
-    }, 16);
+      if (maxScroll > 0) {
+        car.scrollLeft += carDirection * 0.2;
+        if (car.scrollLeft >= maxScroll - 1) carDirection = -1;
+        if (car.scrollLeft <= 1) carDirection = 1;
+      }
+    }
+    requestAnimationFrame(carTick);
   }
 
-  function pauseAndResume() {
-    isDragging = true;
-    clearTimeout(pauseTimer);
-    pauseTimer = setTimeout(() => { isDragging = false; }, 2000);
+  function initCarMobile() {
+    if (window.innerWidth <= 700 && !carRunning) {
+      carRunning = true;
+      car.scrollLeft = 0;
+      setTimeout(() => requestAnimationFrame(carTick), 1000);
+    }
   }
 
-  car.addEventListener('touchstart', pauseAndResume, { passive: true });
-  car.addEventListener('touchmove', pauseAndResume, { passive: true });
-  car.addEventListener('scroll', () => {
-    if (!isDragging) return;
-    clearTimeout(pauseTimer);
-    pauseTimer = setTimeout(() => { isDragging = false; }, 2000);
-  });
+  // try on load and after a short delay (in case layout not ready)
+  window.addEventListener('load', initCarMobile);
+  setTimeout(initCarMobile, 500);
 
-  startAutoScroll();
-  window.addEventListener('resize', () => {
-    clearInterval(autoScroll);
-    startAutoScroll();
-  });
+  car.addEventListener('touchstart', () => {
+    carDragging = true;
+    clearTimeout(carPauseTimer);
+  }, { passive: true });
+
+  car.addEventListener('touchend', () => {
+    clearTimeout(carPauseTimer);
+    carPauseTimer = setTimeout(() => { carDragging = false; }, 2500);
+  }, { passive: true });
 </script>
 </body>
 </html>
