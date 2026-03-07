@@ -860,6 +860,46 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
     });
   }, { threshold: 0.12 });
   revealEls.forEach(el => observer.observe(el));
+
+  // ── MOBILE CAROUSEL AUTO-SCROLL ──
+  const car = document.getElementById('carousel');
+  let autoScroll = null;
+  let direction = 1;
+  let isDragging = false;
+  let pauseTimer = null;
+
+  function isMobile() { return window.innerWidth <= 700; }
+
+  function startAutoScroll() {
+    if (!isMobile()) return;
+    autoScroll = setInterval(() => {
+      if (isDragging) return;
+      const maxScroll = car.scrollWidth - car.clientWidth;
+      car.scrollLeft += direction * 0.8;
+      if (car.scrollLeft >= maxScroll - 2) direction = -1;
+      if (car.scrollLeft <= 2) direction = 1;
+    }, 16);
+  }
+
+  function pauseAndResume() {
+    isDragging = true;
+    clearTimeout(pauseTimer);
+    pauseTimer = setTimeout(() => { isDragging = false; }, 2000);
+  }
+
+  car.addEventListener('touchstart', pauseAndResume, { passive: true });
+  car.addEventListener('touchmove', pauseAndResume, { passive: true });
+  car.addEventListener('scroll', () => {
+    if (!isDragging) return;
+    clearTimeout(pauseTimer);
+    pauseTimer = setTimeout(() => { isDragging = false; }, 2000);
+  });
+
+  startAutoScroll();
+  window.addEventListener('resize', () => {
+    clearInterval(autoScroll);
+    startAutoScroll();
+  });
 </script>
 </body>
 </html>
