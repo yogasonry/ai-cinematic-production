@@ -281,6 +281,9 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
   .hero-h1 { font-size: 44px; }
 }
 
+/* ══ PARTICLES ══ */
+#particles { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
 @keyframes up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 </style>
 </head>
@@ -297,6 +300,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 
 <!-- HERO -->
 <section class="hero">
+  <canvas id="particles"></canvas>
   <div class="hero-bg">
     <video autoplay muted loop playsinline poster="hero-poster.jpg">
       <source src="https://res.cloudinary.com/dqqdjhb2x/video/upload/v1772889933/hero-video_hvubfm.mp4" type="video/mp4">
@@ -779,6 +783,57 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
     // save to localStorage
     localStorage.setItem('lang', lang);
   }
+
+  // ── PARTICLES ──
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let pts = [];
+
+  function resizeCanvas() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function randBetween(a, b) { return a + Math.random() * (b - a); }
+
+  for (let i = 0; i < 55; i++) {
+    pts.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: randBetween(0.5, 1.8),
+      speedX: randBetween(-0.12, 0.12),
+      speedY: randBetween(-0.25, -0.05),
+      opacity: randBetween(0.1, 0.45),
+      flicker: randBetween(0.003, 0.008),
+      flickerDir: 1
+    });
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pts.forEach(p => {
+      // flicker
+      p.opacity += p.flicker * p.flickerDir;
+      if (p.opacity > 0.45 || p.opacity < 0.05) p.flickerDir *= -1;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,241,53,${p.opacity})`;
+      ctx.fill();
+
+      p.x += p.speedX;
+      p.y += p.speedY;
+
+      // wrap around
+      if (p.y < -4) p.y = canvas.height + 4;
+      if (p.x < -4) p.x = canvas.width + 4;
+      if (p.x > canvas.width + 4) p.x = -4;
+    });
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
 
   // init — default EN, restore from localStorage if set
   setLang(localStorage.getItem('lang') || 'en');
