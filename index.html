@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Cinematic Production</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800;900&family=Barlow+Condensed:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0D0D0D;
+  --surface: #141414;
+  --surface2: #1A1A1A;
+  --border: #252525;
+  --mid: #666;
+  --text: #EFEFEF;
+  --dim: #888;
+  --lime: #C8F135;
+  --lime-dim: rgba(200,241,53,0.08);
+  --gold: #D4A843;
+  --gold-lt: #F0D080;
+  --gold-g: linear-gradient(135deg,#C8922A 0%,#F0D080 50%,#C8922A 100%);
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--text); overflow-x: hidden; }
+
+/* ══ HERO ══ */
+.hero { position: relative; width: 100%; height: 100vh; min-height: 560px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; z-index: 0; background: #080808; }
+.hero-bg iframe { position: absolute; top: 50%; left: 50%; width: 177.78vh; height: 100vh; min-width: 100%; min-height: 56.25vw; transform: translate(-50%,-50%); border: none; pointer-events: none; }
+.hero-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom,rgba(0,0,0,.6) 0%,rgba(0,0,0,.2) 45%,rgba(0,0,0,.7) 100%), radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.5) 100%); }
+.hero-body { position: relative; z-index: 2; text-align: center; padding: 0 24px; max-width: 900px; width: 100%; }
+.hero-eye { font-size: 11px; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; color: var(--lime); margin-bottom: 20px; opacity: 0; animation: up .8s .3s ease forwards; }
+.hero-h1 { font-family: 'Barlow Condensed',sans-serif; font-size: clamp(50px,10vw,110px); font-weight: 900; text-transform: uppercase; letter-spacing: .04em; line-height: .92; color: #fff; opacity: 0; animation: up .8s .5s ease forwards; }
+.hero-h1 .gold { display: block; background: var(--gold-g); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub { margin-top: 20px; font-size: 13px; font-weight: 400; color: rgba(255,255,255,.45); letter-spacing: .08em; text-transform: uppercase; opacity: 0; animation: up .8s .7s ease forwards; }
+.hero-cta { margin-top: 36px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; opacity: 0; animation: up .8s .9s ease forwards; }
+.btn-lime { display: inline-flex; align-items: center; gap: 8px; padding: 13px 30px; background: var(--lime); color: #0D0D0D; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; border-radius: 5px; text-decoration: none; transition: opacity .2s,transform .2s; }
+.btn-lime:hover { opacity: .88; transform: translateY(-2px); }
+.btn-ghost { display: inline-flex; align-items: center; gap: 8px; padding: 13px 30px; border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.7); font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; border-radius: 5px; text-decoration: none; transition: border-color .2s,color .2s,transform .2s; }
+.btn-ghost:hover { border-color: var(--lime); color: var(--lime); transform: translateY(-2px); }
+.scroll-hint { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0; animation: up .8s 1.2s ease forwards; }
+.scroll-hint span { font-size: 9px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.28); }
+.scroll-line { width: 1px; height: 36px; background: linear-gradient(to bottom,rgba(255,255,255,.3),transparent); animation: pulse 2s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+/* ══ SECTION SHELL ══ */
+.wrap { max-width: 980px; margin: 0 auto; padding: 80px 24px; }
+.sec-eye { font-size: 10px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--lime); margin-bottom: 10px; }
+.sec-h2 { font-family: 'Barlow Condensed',sans-serif; font-size: clamp(26px,5vw,42px); font-weight: 800; text-transform: uppercase; letter-spacing: .02em; line-height: 1; margin-bottom: 36px; }
+
+/* ══ CAROUSEL ══ */
+.carousel-sec { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.carousel { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; cursor: grab; }
+.carousel:active { cursor: grabbing; }
+.carousel::-webkit-scrollbar { height: 4px; }
+.carousel::-webkit-scrollbar-track { background: var(--border); border-radius: 2px; }
+.carousel::-webkit-scrollbar-thumb { background: var(--lime); border-radius: 2px; }
+.card { flex: 0 0 272px; scroll-snap-align: start; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative; transition: border-color .25s,transform .25s; }
+.card:hover { border-color: rgba(200,241,53,.35); transform: translateY(-4px); }
+.card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--lime); opacity: 0; transition: opacity .25s; z-index: 1; }
+.card:hover::after { opacity: 1; }
+.card-thumb { width: 100%; aspect-ratio: 9/14; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: linear-gradient(160deg,#111,#080808); cursor: pointer; text-decoration: none; }
+.card-thumb-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,.15) 40%, rgba(0,0,0,.55) 100%); z-index: 0; transition: background .25s; }
+.card-thumb:hover .card-thumb-overlay { background: linear-gradient(to bottom, rgba(0,0,0,.45) 0%, rgba(0,0,0,.25) 40%, rgba(0,0,0,.65) 100%); }
+.card-num { display: none; }
+.card-badges { position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 4px; z-index: 1; }
+.card-badge { font-size: 8px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 3px 7px; border-radius: 3px; background: rgba(0,0,0,.65); border: 1px solid rgba(255,255,255,.08); color: rgba(255,255,255,.4); }
+.play-btn { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: transform .25s, opacity .25s; }
+.play-btn svg { filter: drop-shadow(0 2px 10px rgba(0,0,0,.6)); }
+.card:hover .play-btn { transform: scale(1.18); opacity: .8; }
+.card-thumb-label { position: relative; z-index: 1; font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.55); }
+.card-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.card-name { font-family: 'Barlow Condensed',sans-serif; font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; line-height: 1; }
+.card-price { font-family: 'Barlow Condensed',sans-serif; font-size: 17px; font-weight: 800; color: var(--lime); white-space: nowrap; line-height: 1; }
+.card-desc { font-size: 11px; color: var(--dim); line-height: 1.6; }
+.card-fts { display: flex; flex-wrap: wrap; gap: 5px; }
+.card-ft { font-size: 8.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 3px 7px; border-radius: 3px; background: rgba(200,241,53,.06); border: 1px solid rgba(200,241,53,.15); color: rgba(200,241,53,.6); }
+.card-cta { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 5px; font-size: 9px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; margin-top: auto; border: 1px solid rgba(200,241,53,.25); color: var(--lime); transition: background .2s,border-color .2s; width: fit-content; }
+.card-cta:hover { background: var(--lime-dim); border-color: var(--lime); }
+.card.gold-card { border-color: rgba(212,168,67,.35); background: linear-gradient(160deg,#181510,#141414); }
+.card.gold-card::after { background: var(--gold-g); }
+.card.gold-card:hover { border-color: var(--gold); }
+.card.gold-card .card-thumb { background: linear-gradient(160deg,#1a1508,#0f0d07); }
+.card.gold-card .play-btn { background: var(--gold-g); }
+.card.gold-card .card-price { background: var(--gold-g); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.card.gold-card .card-ft { background: rgba(212,168,67,.06); border-color: rgba(212,168,67,.2); color: rgba(212,168,67,.7); }
+.card.gold-card .card-cta { border-color: rgba(212,168,67,.3); color: var(--gold-lt); }
+.card.gold-card .card-cta:hover { background: rgba(212,168,67,.08); border-color: var(--gold); }
+.dots { display: flex; gap: 6px; justify-content: center; margin-top: 20px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: background .2s,width .2s; cursor: pointer; }
+.dot.on { background: var(--lime); width: 20px; border-radius: 3px; }
+
+/* ══════════════════════════════════════
+   PRICING — DESKTOP TABLE
+   Shown on screens > 700px
+══════════════════════════════════════ */
+.dt { display: block; } /* desktop table wrapper */
+.mc { display: none; }  /* mobile cards wrapper */
+
+.dt-head {
+  display: grid;
+  grid-template-columns: 160px 90px 1fr 1fr 145px;
+  gap: 20px; padding: 10px 16px;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px;
+}
+.dt-hd { font-size: 9.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--mid); }
+.dt-hd.r { text-align: right; }
+
+.dt-row {
+  display: grid;
+  grid-template-columns: 160px 90px 1fr 1fr 145px;
+  gap: 20px; padding: 28px 16px;
+  border: 1px solid var(--border); border-radius: 8px; margin-bottom: 6px;
+  align-items: start; background: var(--surface);
+  position: relative; overflow: hidden;
+  transition: border-color .2s,background .2s;
+}
+.dt-row::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--lime); opacity: 0; transition: opacity .2s; }
+.dt-row:hover { border-color: var(--lime); background: var(--lime-dim); }
+.dt-row:hover::before { opacity: 1; }
+
+/* cells */
+.pkt { display: flex; flex-direction: column; gap: 8px; }
+.pkt-num { display: flex; align-items: center; gap: 6px; }
+.pkt-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); flex-shrink: 0; }
+.pkt-n { font-size: 9px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--lime); }
+.pkt-name { font-family: 'Barlow Condensed',sans-serif; font-size: 30px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; line-height: 1; }
+.pkt-tag { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; width: fit-content; background: var(--surface2); color: var(--dim); border: 1px solid var(--border); }
+.dur-cell { padding-top: 4px; }
+.dur-n { font-family: 'Barlow Condensed',sans-serif; font-size: 36px; font-weight: 800; line-height: 1; }
+.dur-u { font-size: 9.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin-top: 3px; }
+.feat-cell { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; line-height: 1.5; padding-top: 4px; }
+.dlist { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.dlist li { font-size: 12px; color: var(--dim); display: flex; align-items: baseline; gap: 8px; line-height: 1.4; }
+.dlist li::before { content: '+'; font-size: 11px; font-weight: 700; color: var(--lime); flex-shrink: 0; }
+.price-cell { text-align: right; padding-top: 2px; }
+.price-amt { font-family: 'Barlow Condensed',sans-serif; font-size: 26px; font-weight: 800; letter-spacing: -.01em; color: var(--lime); line-height: 1; }
+.price-sub { font-size: 9.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--mid); margin-top: 5px; }
+.price-btn { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 9.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--lime); text-decoration: none; border: 1px solid rgba(200,241,53,.25); padding: 4px 10px; border-radius: 4px; transition: background .2s,border-color .2s; }
+.price-btn:hover { background: var(--lime-dim); border-color: var(--lime); }
+.price-btn.alt { color: var(--dim); border-color: var(--border); }
+.price-btn.alt:hover { color: var(--lime); border-color: var(--lime); background: var(--lime-dim); }
+
+/* premium desktop row */
+.dt-row.prem { background: linear-gradient(160deg,#181510,#141414); border-color: rgba(212,168,67,.35); }
+.dt-row.prem::before { background: var(--gold-g); }
+.dt-row.prem:hover { border-color: var(--gold); background: linear-gradient(160deg,#1e1a0e,#161410); }
+.dt-row.prem:hover::before { opacity: 1; }
+.dt-row.prem .pkt-dot { background: var(--gold-g); }
+.dt-row.prem .pkt-n { color: var(--gold-lt); }
+.dt-row.prem .pkt-name { background: var(--gold-g); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.dt-row.prem .pkt-tag { background: rgba(212,168,67,.1); border-color: rgba(212,168,67,.35); color: var(--gold-lt); }
+.dt-row.prem .dlist li::before { color: var(--gold); }
+.dt-row.prem .price-amt { background: var(--gold-g); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.dt-row.prem .price-btn.alt { color: var(--gold); border-color: rgba(212,168,67,.35); }
+.dt-row.prem .price-btn.alt:hover { color: var(--gold-lt); border-color: var(--gold); background: rgba(212,168,67,.1); }
+
+/* ══════════════════════════════════════
+   PRICING — MOBILE CARDS
+   Shown on screens ≤ 700px
+══════════════════════════════════════ */
+.mc-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  margin-bottom: 12px; overflow: hidden; position: relative;
+  transition: border-color .2s;
+}
+.mc-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--lime); }
+.mc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 20px 16px 16px; border-bottom: 1px solid var(--border); }
+.mc-name { font-family: 'Barlow Condensed',sans-serif; font-size: 26px; font-weight: 800; text-transform: uppercase; line-height: 1; }
+.mc-tag { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; width: fit-content; background: var(--surface2); color: var(--dim); border: 1px solid var(--border); margin-top: 6px; }
+.mc-price { text-align: right; flex-shrink: 0; }
+.mc-amt { font-family: 'Barlow Condensed',sans-serif; font-size: 22px; font-weight: 800; color: var(--lime); line-height: 1; }
+.mc-per { font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--mid); margin-top: 3px; }
+.mc-pbtn { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--lime); text-decoration: none; border: 1px solid rgba(200,241,53,.25); padding: 4px 10px; border-radius: 4px; }
+.mc-pbtn.alt { color: var(--dim); border-color: var(--border); }
+.mc-body { padding: 16px 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+.mc-dur { display: flex; align-items: baseline; gap: 5px; }
+.mc-dur-n { font-family: 'Barlow Condensed',sans-serif; font-size: 14px; font-weight: 700; color: var(--dim); }
+.mc-dur-u { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.mc-feat { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; line-height: 1.4; }
+.mc-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.mc-list li { font-size: 12px; color: var(--dim); display: flex; align-items: baseline; gap: 8px; line-height: 1.4; }
+.mc-list li::before { content: '+'; font-size: 11px; font-weight: 700; color: var(--lime); flex-shrink: 0; }
+
+/* mobile premium card */
+.mc-card.prem { background: linear-gradient(160deg,#181510,#141414); border-color: rgba(212,168,67,.35); }
+.mc-card.prem::before { background: var(--gold-g); }
+.mc-card.prem .mc-name { background: var(--gold-g); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.mc-card.prem .mc-tag { background: rgba(212,168,67,.1); border-color: rgba(212,168,67,.35); color: var(--gold-lt); }
+.mc-card.prem .mc-amt { background: var(--gold-g); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.mc-card.prem .mc-pbtn.alt { color: var(--gold); border-color: rgba(212,168,67,.35); }
+.mc-card.prem .mc-list li::before { color: var(--gold); }
+
+/* shared footer */
+.tbl-footer { margin-top: 20px; padding: 16px; border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: space-between; background: var(--surface2); }
+.tbl-note { font-size: 11px; color: var(--mid); }
+.tbl-wa a { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #0D0D0D; background: var(--lime); padding: 9px 18px; border-radius: 5px; text-decoration: none; transition: opacity .2s; }
+.tbl-wa a:hover { opacity: .85; }
+
+/* ══ RESPONSIVE TOGGLE ══ */
+@media (max-width: 700px) {
+  .wrap { padding: 56px 16px; }
+  .hero-sub { display: none; }
+  .hero-cta { flex-direction: column; align-items: center; }
+  .btn-lime, .btn-ghost { width: 100%; max-width: 300px; justify-content: center; }
+  .card { flex: 0 0 80vw; }
+
+  /* swap pricing views */
+  .dt { display: none; }
+  .mc { display: block; }
+
+  .tbl-footer { flex-direction: column; gap: 14px; text-align: center; }
+  .tbl-wa a { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 380px) {
+  .hero-h1 { font-size: 44px; }
+}
+
+@keyframes up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <iframe src="https://www.youtube.com/embed/FvRlJgCbzB4?autoplay=1&mute=1&loop=1&playlist=FvRlJgCbzB4&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-body">
+    <div class="hero-eye">✦ Jasa Produksi Video Berbasis AI</div>
+    <h1 class="hero-h1">AI <span class="gold">Cinematic</span> Production</h1>
+    <p class="hero-sub">Motion Graphic &nbsp;·&nbsp; Logo Animation &nbsp;·&nbsp; AI Video &nbsp;·&nbsp; Infographic</p>
+    <div class="hero-cta">
+      <a href="#pricing" class="btn-lime">Lihat Paket Harga</a>
+      <a href="https://wa.me/6281236969035?text=Halo%2C%20saya%20ingin%20tanya%20tentang%20Jasa%20AI%20Video%20Production" target="_blank" class="btn-ghost">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Hubungi Kami
+      </a>
+    </div>
+  </div>
+  <div class="scroll-hint"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<!-- CAROUSEL -->
+<section class="carousel-sec">
+  <div class="wrap">
+    <div class="sec-eye">Portfolio</div>
+    <div class="sec-h2">Lihat Karya Kami</div>
+    <div class="carousel" id="carousel">
+
+      <div class="card">
+        <a class="card-thumb" href="https://www.instagram.com/reel/DVYGexbjV0i/" target="_blank" style="background-image:url('thumb-basic.jpg');background-size:cover;background-position:center;">
+          <div class="card-thumb-overlay"></div>
+          <div class="card-badges"><span class="card-badge">30 Detik</span><span class="card-badge">AI Video</span></div>
+          <div class="play-btn"><svg width="36" height="36" viewBox="0 0 24 24" fill="#C8F135"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="card-thumb-label">Tonton di Instagram</div>
+        </a>
+        <div class="card-body">
+          <div class="card-top"><div class="card-name">Paket Basic</div><div class="card-price">Rp850K</div></div>
+          <div class="card-desc">AI Video + Simple Editing. Cocok untuk konten promosi singkat dan media sosial.</div>
+          <div class="card-fts"><span class="card-ft">±6 AI Shots</span><span class="card-ft">Cut Editing</span><span class="card-ft">BGM</span></div>
+          <a class="card-cta" href="https://www.instagram.com/reel/DVYGexbjV0i/" target="_blank">▶ &nbsp;Tonton di Instagram</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <a class="card-thumb" href="https://www.instagram.com/reel/DVibwPZD7Rn/" target="_blank" style="background-image:url('thumb-standard.jpg');background-size:cover;background-position:center;">
+          <div class="card-thumb-overlay"></div>
+          <div class="card-badges"><span class="card-badge">60 Detik</span><span class="card-badge">Motion Graphic</span></div>
+          <div class="play-btn"><svg width="36" height="36" viewBox="0 0 24 24" fill="#C8F135"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="card-thumb-label">Tonton di Instagram</div>
+        </a>
+        <div class="card-body">
+          <div class="card-top"><div class="card-name">Paket Standard</div><div class="card-price">Rp1.8jt</div></div>
+          <div class="card-desc">Motion Graphic + Logo Animation. Brand tampil lebih cinematic dan profesional.</div>
+          <div class="card-fts"><span class="card-ft">±12 AI Shots</span><span class="card-ft">Motion Graphic</span><span class="card-ft">Logo Anim</span></div>
+          <a class="card-cta" href="https://www.instagram.com/reel/DVibwPZD7Rn/" target="_blank">▶ &nbsp;Tonton di Instagram</a>
+        </div>
+      </div>
+
+      <div class="card gold-card">
+        <a class="card-thumb" href="https://wa.me/6281236969035?text=Halo%2C%20saya%20tertarik%20dengan%20Paket%20Premium%20AI%20Video%20Production" target="_blank" style="background-image:url('thumb-premium.jpg');background-size:cover;background-position:center;">
+          <div class="card-thumb-overlay"></div>
+          <div class="card-badges">
+            <span class="card-badge" style="border-color:rgba(212,168,67,.2);color:rgba(212,168,67,.55);">60–90 Detik</span>
+            <span class="card-badge" style="border-color:rgba(212,168,67,.2);color:rgba(212,168,67,.55);">Infographic</span>
+          </div>
+          <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <div style="font-size:28px;opacity:.6;">✦</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;background:var(--gold-g);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Coming Soon</div>
+          </div>
+          <div class="card-thumb-label" style="color:rgba(212,168,67,.28);">Sample dalam produksi</div>
+        </a>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name" style="background:var(--gold-g);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Paket Premium</div>
+            <div class="card-price">Rp3jt</div>
+          </div>
+          <div class="card-desc">Motion Graphic + Logo + Infographic. Paket lengkap untuk storytelling brand.</div>
+          <div class="card-fts"><span class="card-ft">±15 AI Shots</span><span class="card-ft">Storytelling</span><span class="card-ft">Infographic</span></div>
+          <a class="card-cta" href="https://wa.me/6281236969035?text=Halo%2C%20saya%20tertarik%20dengan%20Paket%20Premium%20AI%20Video%20Production" target="_blank">💬 &nbsp;Discuss With Us</a>
+        </div>
+      </div>
+
+    </div>
+    <div class="dots" id="dots">
+      <div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-eye">Harga</div>
+    <div class="sec-h2">Pilih Paket Anda</div>
+
+    <!-- ═══ DESKTOP TABLE ═══ -->
+    <div class="dt">
+      <div class="dt-head">
+        <div class="dt-hd">Paket</div>
+        <div class="dt-hd">Durasi</div>
+        <div class="dt-hd">Fitur Utama</div>
+        <div class="dt-hd">Detail Produksi</div>
+        <div class="dt-hd r">Harga</div>
+      </div>
+
+      <!-- Basic -->
+      <div class="dt-row">
+        <div class="pkt">
+          <div class="pkt-num"><div class="pkt-dot"></div><span class="pkt-n">01</span></div>
+          <div class="pkt-name">Basic</div>
+          <div class="pkt-tag">Starter Pack</div>
+        </div>
+        <div class="dur-cell"><div class="dur-n">30</div><div class="dur-u">detik</div></div>
+        <div class="feat-cell">AI Video +<br>Simple Editing</div>
+        <ul class="dlist">
+          <li>±6 AI shots</li><li>Prompt &amp; generate AI video</li><li>Simple cut editing</li><li>Background music</li>
+        </ul>
+        <div class="price-cell">
+          <div class="price-amt">Rp850.000</div>
+          <div class="price-sub">per video</div>
+          <a class="price-btn" href="https://www.instagram.com/reel/DVYGexbjV0i/" target="_blank">▶ Lihat Contoh</a>
+        </div>
+      </div>
+
+      <!-- Standard -->
+      <div class="dt-row">
+        <div class="pkt">
+          <div class="pkt-num"><div class="pkt-dot"></div><span class="pkt-n">02</span></div>
+          <div class="pkt-name">Standard</div>
+          <div class="pkt-tag">Most Popular</div>
+        </div>
+        <div class="dur-cell"><div class="dur-n">60</div><div class="dur-u">detik</div></div>
+        <div class="feat-cell">Motion Graphic +<br>Logo Animation</div>
+        <ul class="dlist">
+          <li>±12 AI shots</li><li>Prompt engineering</li><li>Cinematic editing</li><li>Motion graphic animation</li><li>Logo animation</li>
+        </ul>
+        <div class="price-cell">
+          <div class="price-amt">Rp1.800.000</div>
+          <div class="price-sub">per video</div>
+          <a class="price-btn" href="https://www.instagram.com/reel/DVibwPZD7Rn/" target="_blank">▶ Lihat Contoh</a>
+        </div>
+      </div>
+
+      <!-- Premium -->
+      <div class="dt-row prem">
+        <div class="pkt">
+          <div class="pkt-num"><div class="pkt-dot"></div><span class="pkt-n">03</span></div>
+          <div class="pkt-name">Premium</div>
+          <div class="pkt-tag">✦ Full Package</div>
+        </div>
+        <div class="dur-cell"><div class="dur-n">90</div><div class="dur-u">detik</div></div>
+        <div class="feat-cell">Motion Graphic +<br>Logo + Infographic</div>
+        <ul class="dlist">
+          <li>±15 AI shots</li><li>Advanced prompt design</li><li>Cinematic storytelling edit</li><li>Motion graphic animation</li><li>Logo animation</li><li>Infographic animation</li>
+        </ul>
+        <div class="price-cell">
+          <div class="price-amt">Rp3.000.000</div>
+          <div class="price-sub">per video</div>
+          <a class="price-btn alt" href="https://wa.me/6281236969035?text=Halo%2C%20saya%20tertarik%20Paket%20Premium" target="_blank">💬 Discuss With Us</a>
+        </div>
+      </div>
+    </div><!-- /dt -->
+
+    <!-- ═══ MOBILE CARDS ═══ -->
+    <div class="mc">
+
+      <!-- Basic -->
+      <div class="mc-card">
+        <div class="mc-top">
+          <div>
+            <div class="mc-name">Basic</div>
+            <div class="mc-tag">Starter Pack</div>
+          </div>
+          <div class="mc-price">
+            <div class="mc-amt">Rp850.000</div>
+            <div class="mc-per">per video</div>
+            <a class="mc-pbtn" href="https://www.instagram.com/reel/DVYGexbjV0i/" target="_blank">▶ Lihat Contoh</a>
+          </div>
+        </div>
+        <div class="mc-body">
+          <div class="mc-dur"><div class="mc-dur-n">30</div><div class="mc-dur-u">detik</div></div>
+          <div class="mc-feat">AI Video + Simple Editing</div>
+          <ul class="mc-list">
+            <li>±6 AI shots</li><li>Prompt &amp; generate AI video</li><li>Simple cut editing</li><li>Background music</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Standard -->
+      <div class="mc-card">
+        <div class="mc-top">
+          <div>
+            <div class="mc-name">Standard</div>
+            <div class="mc-tag">Most Popular</div>
+          </div>
+          <div class="mc-price">
+            <div class="mc-amt">Rp1.800.000</div>
+            <div class="mc-per">per video</div>
+            <a class="mc-pbtn" href="https://www.instagram.com/reel/DVibwPZD7Rn/" target="_blank">▶ Lihat Contoh</a>
+          </div>
+        </div>
+        <div class="mc-body">
+          <div class="mc-dur"><div class="mc-dur-n">60</div><div class="mc-dur-u">detik</div></div>
+          <div class="mc-feat">Motion Graphic + Logo Animation</div>
+          <ul class="mc-list">
+            <li>±12 AI shots</li><li>Prompt engineering</li><li>Cinematic editing</li><li>Motion graphic animation</li><li>Logo animation</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Premium -->
+      <div class="mc-card prem">
+        <div class="mc-top">
+          <div>
+            <div class="mc-name">Premium</div>
+            <div class="mc-tag">✦ Full Package</div>
+          </div>
+          <div class="mc-price">
+            <div class="mc-amt">Rp3.000.000</div>
+            <div class="mc-per">per video</div>
+            <a class="mc-pbtn alt" href="https://wa.me/6281236969035?text=Halo%2C%20saya%20tertarik%20Paket%20Premium" target="_blank">💬 Discuss With Us</a>
+          </div>
+        </div>
+        <div class="mc-body">
+          <div class="mc-dur"><div class="mc-dur-n">60–90</div><div class="mc-dur-u">detik</div></div>
+          <div class="mc-feat">Motion Graphic + Logo + Infographic</div>
+          <ul class="mc-list">
+            <li>±15 AI shots</li><li>Advanced prompt design</li><li>Cinematic storytelling edit</li><li>Motion graphic animation</li><li>Logo animation</li><li>Infographic animation</li>
+          </ul>
+        </div>
+      </div>
+
+    </div><!-- /mc -->
+
+    <!-- Footer (shared) -->
+    <div class="tbl-footer">
+      <div class="tbl-note">Harga belum termasuk PPN &nbsp;·&nbsp; Revisi 2× &nbsp;·&nbsp; Free konsultasi awal</div>
+      <div class="tbl-wa">
+        <a href="https://wa.me/6281236969035?text=Halo%2C%20saya%20ingin%20tanya%20tentang%20Jasa%20AI%20Video%20Production" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Hubungi Kami
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div style="height:80px;"></div>
+
+<script>
+  const cr = document.getElementById('carousel');
+  const ds = document.querySelectorAll('.dot');
+  ds.forEach((d,i) => d.addEventListener('click', () => {
+    const cards = cr.querySelectorAll('.card');
+    if (cards[i]) cr.scrollTo({left: cards[i].offsetLeft, behavior:'smooth'});
+  }));
+  cr.addEventListener('scroll', () => {
+    const cards = cr.querySelectorAll('.card');
+    let ci = 0, md = Infinity;
+    cards.forEach((c,i) => { const d = Math.abs(c.offsetLeft - cr.scrollLeft); if(d<md){md=d;ci=i;} });
+    ds.forEach((d,i) => d.classList.toggle('on', i===ci));
+  });
+</script>
+</body>
+</html>
