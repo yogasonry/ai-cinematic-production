@@ -69,6 +69,18 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 .scroll-hint { position: absolute; bottom: 32px; left: calc(50% - 20px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0; animation: up .8s 1.2s ease forwards; width: 40px; }
 .scroll-hint span { font-size: 9px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.28); }
 .scroll-line { width: 1px; height: 36px; background: linear-gradient(to bottom,rgba(255,255,255,.3),transparent); animation: pulse 2s ease infinite; }
+/* ══ POWERED BY ══ */
+.powered-sec { background: var(--bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 20px 0 18px; text-align: center; overflow: hidden; }
+.powered-sec .powered-label { font-size: 9px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--mid); margin-bottom: 14px; }
+.marquee-wrap { position: relative; overflow: hidden; width: 100%; }
+.marquee-wrap::before, .marquee-wrap::after { content: ''; position: absolute; top: 0; width: 120px; height: 100%; z-index: 2; pointer-events: none; }
+.marquee-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+.marquee-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+.marquee-wrap, .marquee-track, .marquee-img { display: none; }
+.powered-static { display: flex; justify-content: center; }
+.powered-static-img { height: 28px; width: auto; opacity: .5; filter: brightness(1.1); }
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
 /* ══ WA FLOATING BUTTON ══ */
 #wa-float {
   position: fixed; bottom: 28px; right: 24px; z-index: 999;
@@ -304,6 +316,14 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
     </div>
   </div>
   <div class="scroll-hint"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<!-- POWERED BY -->
+<section class="powered-sec reveal">
+  <p class="powered-label" data-i18n="powered-by">Powered by</p>
+  <div class="powered-static">
+    <img src="logo.png" alt="Powered by logos" class="powered-static-img">
+  </div>
 </section>
 
 <!-- CAROUSEL -->
@@ -577,6 +597,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
   const translations = {
     en: {
       'hero-eye':     'AI-Powered Video Production Service',
+      'powered-by':   'Powered by',
       'hero-cta1':    'View Pricing',
       'hero-cta2':    'Contact Us',
       'portfolio-eye':'Portfolio',
@@ -649,6 +670,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
     },
     id: {
       'hero-eye':     'Jasa Produksi Video Berbasis AI',
+      'powered-by':   'Didukung oleh',
       'hero-cta1':    'Lihat Paket Harga',
       'hero-cta2':    'Hubungi Kami',
       'portfolio-eye':'Portfolio',
