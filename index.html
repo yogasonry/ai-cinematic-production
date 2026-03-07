@@ -24,7 +24,19 @@
 }
 
 html { scroll-behavior: smooth; }
-body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--text); overflow-x: hidden; }
+body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--text); overflow-x: hidden; cursor: none; }
+
+/* ══ CUSTOM CURSOR ══ */
+#cursor { position: fixed; width: 10px; height: 10px; border-radius: 50%; background: var(--lime); pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width .2s ease, height .2s ease; mix-blend-mode: difference; }
+#cursor-ring { position: fixed; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(200,241,53,.35); pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: width .25s ease, height .25s ease, border-color .2s ease; }
+.cursor-hover #cursor { width: 6px; height: 6px; }
+.cursor-hover #cursor-ring { width: 52px; height: 52px; border-color: var(--lime); }
+
+/* mobile — restore default cursor */
+@media (hover: none) {
+  body { cursor: auto; }
+  #cursor, #cursor-ring { display: none; }
+}
 
 /* ══ HERO ══ */
 .hero { position: relative; width: 100%; height: 100vh; min-height: 560px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -37,9 +49,9 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 .hero-h1 .gold { display: block; background: var(--gold-g); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .hero-sub { margin-top: 20px; font-size: 13px; font-weight: 400; color: rgba(255,255,255,.45); letter-spacing: .08em; text-transform: uppercase; opacity: 0; animation: up .8s .7s ease forwards; }
 .hero-cta { margin-top: 36px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; opacity: 0; animation: up .8s .9s ease forwards; }
-.btn-lime { display: inline-flex; align-items: center; gap: 8px; padding: 13px 30px; background: var(--lime); color: #0D0D0D; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; border-radius: 5px; text-decoration: none; transition: opacity .2s,transform .2s; }
+.btn-lime { display: inline-flex; align-items: center; gap: 8px; padding: 13px 30px; background: var(--lime); color: #0D0D0D; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; border-radius: 5px; text-decoration: none; transition: opacity .2s, transform .2s; cursor: none; }
 .btn-lime:hover { opacity: .88; transform: translateY(-2px); }
-.btn-ghost { display: inline-flex; align-items: center; gap: 8px; padding: 13px 30px; border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.7); font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; border-radius: 5px; text-decoration: none; transition: border-color .2s,color .2s,transform .2s; }
+.btn-ghost { display: inline-flex; align-items: center; gap: 8px; padding: 13px 30px; border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.7); font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; border-radius: 5px; text-decoration: none; transition: border-color .2s, color .2s, transform .2s; cursor: none; }
 .btn-ghost:hover { border-color: var(--lime); color: var(--lime); transform: translateY(-2px); }
 .scroll-hint { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0; animation: up .8s 1.2s ease forwards; }
 .scroll-hint span { font-size: 9px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.28); }
@@ -58,10 +70,11 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 .carousel::-webkit-scrollbar { height: 4px; }
 .carousel::-webkit-scrollbar-track { background: var(--border); border-radius: 2px; }
 .carousel::-webkit-scrollbar-thumb { background: var(--lime); border-radius: 2px; }
-.card { flex: 0 0 272px; scroll-snap-align: start; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative; transition: border-color .25s,transform .25s; }
+.card { flex: 0 0 272px; scroll-snap-align: start; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative; transition: border-color .25s, transform .25s; }
 .card:hover { border-color: rgba(200,241,53,.35); transform: translateY(-4px); }
 .card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--lime); opacity: 0; transition: opacity .25s; z-index: 1; }
 .card:hover::after { opacity: 1; }
+.card.gold-card::after { background: var(--gold-g); }
 .card-thumb { width: 100%; aspect-ratio: 9/14; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: linear-gradient(160deg,#111,#080808); cursor: pointer; text-decoration: none; }
 .card-thumb-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,.15) 40%, rgba(0,0,0,.55) 100%); z-index: 0; transition: background .25s; }
 .card-thumb:hover .card-thumb-overlay { background: linear-gradient(to bottom, rgba(0,0,0,.45) 0%, rgba(0,0,0,.25) 40%, rgba(0,0,0,.65) 100%); }
@@ -225,6 +238,8 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
 </style>
 </head>
 <body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
 
 <!-- HERO -->
 <section class="hero">
@@ -233,7 +248,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-body">
-    <div class="hero-eye">✦ Jasa Produksi Video Berbasis AI</div>
+    <div class="hero-eye"><span style="color:var(--lime);">✦</span> Jasa Produksi Video Berbasis AI</div>
     <h1 class="hero-h1">AI <span class="gold">Cinematic</span> Production</h1>
     <p class="hero-sub">Motion Graphic &nbsp;·&nbsp; Logo Animation &nbsp;·&nbsp; AI Video &nbsp;·&nbsp; Infographic</p>
     <div class="hero-cta">
@@ -292,7 +307,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
             <span class="card-badge" style="border-color:rgba(212,168,67,.2);color:rgba(212,168,67,.55);">Infographic</span>
           </div>
           <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;">
-            <div style="font-size:28px;opacity:.6;">✦</div>
+            <svg width="28" height="28" viewBox="0 0 24 24" style="opacity:.65;" fill="#D4A843"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
             <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;background:var(--gold-g);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Coming Soon</div>
           </div>
           <div class="card-thumb-label" style="color:rgba(212,168,67,.28);">Sample dalam produksi</div>
@@ -374,7 +389,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
         <div class="pkt">
           <div class="pkt-num"><div class="pkt-dot"></div><span class="pkt-n">03</span></div>
           <div class="pkt-name">Premium</div>
-          <div class="pkt-tag">✦ Full Package</div>
+          <div class="pkt-tag"><span style="color:var(--gold-lt);">✦</span> Full Package</div>
         </div>
         <div class="dur-cell"><div class="dur-n">90</div><div class="dur-u">detik</div></div>
         <div class="feat-cell">Motion Graphic +<br>Logo + Infographic</div>
@@ -441,7 +456,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
         <div class="mc-top">
           <div>
             <div class="mc-name">Premium</div>
-            <div class="mc-tag">✦ Full Package</div>
+            <div class="mc-tag"><span style="color:var(--gold-lt);">✦</span> Full Package</div>
           </div>
           <div class="mc-price">
             <div class="mc-amt">Rp3.000.000</div>
@@ -489,6 +504,27 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
     cards.forEach((c,i) => { const d = Math.abs(c.offsetLeft - cr.scrollLeft); if(d<md){md=d;ci=i;} });
     ds.forEach((d,i) => d.classList.toggle('on', i===ci));
   });
+
+  // ── CUSTOM CURSOR ──
+  const cur = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  if (cur && window.matchMedia('(hover: hover)').matches) {
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cur.style.left = mx+'px'; cur.style.top = my+'px';
+    });
+    (function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx+'px'; ring.style.top = ry+'px';
+      requestAnimationFrame(animRing);
+    })();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+    });
+  }
 </script>
 </body>
 </html>
