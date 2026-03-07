@@ -888,7 +888,7 @@ body { background: var(--bg); font-family: 'Barlow', sans-serif; color: var(--te
     if (window.innerWidth <= 700 && !carRunning) {
       carRunning = true;
       car.scrollLeft = 0;
-      setTimeout(() => requestAnimationFrame(carTick), 1000);
+      setTimeout(() => requestAnimationFrame(carTick), 500);
     }
   }
 
